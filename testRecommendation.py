@@ -17,43 +17,43 @@ import pickle
 # Example input data
 input_data = {
     "genre": "Drama",
-    "companySuccessState": "Engaged",
-    "companySuccessInteractionScore": 2,
-    "companySuccessStatus": "Red"
+    "countryOrigin": "US",
+    "cost": 200000,
+    "mainActor": "Johnny Depp"
 }
 
 # Define parameters for text processing
-max_success_program_length = 10
-max_success_state_length = 10
-max_success_status_length = 10
+max_genre_length = 10
+max_country_origin_length = 10
+max_main_actor_length = 10
 num_words = 1000  # Example vocabulary size
 
 # Tokenizer for text fields
-success_program_tokenizer = Tokenizer(num_words=num_words)
-success_state_tokenizer = Tokenizer(num_words=num_words)
-success_status_tokenizer = Tokenizer(num_words=num_words)
+genre_tokenizer = Tokenizer(num_words=num_words)
+country_origin_tokenizer = Tokenizer(num_words=num_words)
+main_actor_tokenizer = Tokenizer(num_words=num_words)
 
 # Fit tokenizers on your training data (for demonstration, we use only the input data)
-success_program_tokenizer.fit_on_texts([input_data["genre"]])
-success_state_tokenizer.fit_on_texts([input_data["companySuccessState"]])
-success_status_tokenizer.fit_on_texts([input_data["companySuccessStatus"]])
+genre_tokenizer.fit_on_texts([input_data["genre"]])
+country_origin_tokenizer.fit_on_texts([input_data["countryOrigin"]])
+main_actor_tokenizer.fit_on_texts([input_data["mainActor"]])
 
 # Convert text to sequences
-success_program_seq = success_program_tokenizer.texts_to_sequences([input_data["genre"]])
-success_state_seq = success_state_tokenizer.texts_to_sequences([input_data["companySuccessState"]])
-success_status_seq = success_status_tokenizer.texts_to_sequences([input_data["companySuccessStatus"]])
+genre_seq = genre_tokenizer.texts_to_sequences([input_data["genre"]])
+country_origin_seq = country_origin_tokenizer.texts_to_sequences([input_data["countryOrigin"]])
+main_actor_seq = main_actor_tokenizer.texts_to_sequences([input_data["mainActor"]])
 
 # Pad sequences
-success_program_pad = pad_sequences(success_program_seq, maxlen=max_success_program_length, padding='post')
-success_state_pad = pad_sequences(success_state_seq, maxlen=max_success_state_length, padding='post')
-success_status_pad = pad_sequences(success_status_seq, maxlen=max_success_status_length, padding='post')
+genre_pad = pad_sequences(genre_seq, maxlen=max_genre_length, padding='post')
+country_origin_pad = pad_sequences(country_origin_seq, maxlen=max_country_origin_length, padding='post')
+main_actor_pad = pad_sequences(main_actor_seq, maxlen=max_main_actor_length, padding='post')
 
 # Prepare the final input array
 model_input = np.concatenate([
-    success_program_pad.astype(np.float32),
-    success_state_pad.astype(np.float32),
-    success_status_pad.astype(np.float32),
-    np.array([[input_data["companySuccessInteractionScore"]]], dtype=np.float32)
+    genre_pad.astype(np.float32),
+    country_origin_pad.astype(np.float32),
+    main_actor_pad.astype(np.float32),
+    np.array([[input_data["cost"]]], dtype=np.float32)
 ], axis=1)
 
 # Load the model

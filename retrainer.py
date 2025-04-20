@@ -28,10 +28,10 @@ with open('synthetic_data.json') as f:
         data = json.load(f)
 # data = {
 #     "genre": ['Drama', 'Action', 'Horror', 'Comedy'],
-#     "companySuccessState": ['Engaged', 'Assigned', 'Inactive', 'Engaged', 'Assigned'],
-#     "companySuccessInteractionScore": [5, 2, 3, 4, 1],
-#     "companySuccessStatus": ['Red', 'Amber', 'Green', 'Amber', 'Green'],
-#     "outcomes": [0, 2, 2, 1, 3],
+#     "countryOrigin": ['US', 'UK', 'France'],
+#     "cost": [5000, 2000, 3000, 4000, 1000],
+#     "mainActor": ['Johnny Depp', 'Morgan Freeman', 'Tom Hanks', 'Johnny Depp', 'Morgan Freeman'],
+#     "recommendatedForYou": [0, 2, 2, 1, 3],
 #     "reward": [4.5, 1.2, 3.0, 4.8, 0.5]
 # }
 
@@ -39,19 +39,19 @@ df = pd.DataFrame(data)
 
 # Prepare text data
 tokenizer = Tokenizer()
-tokenizer.fit_on_texts(df['genre'].tolist() + df['companySuccessState'].tolist() + df['companySuccessStatus'].tolist())
-success_program_sequences = tokenizer.texts_to_sequences(df['genre'])
-success_state_sequences = tokenizer.texts_to_sequences(df['companySuccessState'])
-success_status_sequences = tokenizer.texts_to_sequences(df['companySuccessStatus'])
+tokenizer.fit_on_texts(df['genre'].tolist() + df['countryOrigin'].tolist() + df['mainActor'].tolist())
+genre_sequences = tokenizer.texts_to_sequences(df['genre'])
+country_origin_sequences = tokenizer.texts_to_sequences(df['countryOrigin'])
+main_actor_sequences = tokenizer.texts_to_sequences(df['mainActor'])
 
 # Pad sequences
-max_len_success_program = 10
-max_len_success_state = 10
-max_len_success_status = 10
+max_len_genre = 10
+max_len_country_origin = 10
+max_len_main_actor = 10
 
-success_program_padded = pad_sequences(success_program_sequences, maxlen=max_len_success_program)
-success_state_padded = pad_sequences(success_state_sequences, maxlen=max_len_success_state)
-success_status_padded = pad_sequences(success_status_sequences, maxlen=max_len_success_status)
+genre_padded = pad_sequences(genre_sequences, maxlen=max_len_genre)
+country_origin_padded = pad_sequences(country_origin_sequences, maxlen=max_len_country_origin)
+main_actor_padded = pad_sequences(main_actor_sequences, maxlen=max_len_main_actor)
 
 # Prepare other features
 
@@ -65,32 +65,32 @@ success_status_padded = pad_sequences(success_status_sequences, maxlen=max_len_s
 
     
 # Tokenize and pad text data
-tokenizer_success_program = Tokenizer()
-tokenizer_success_program.fit_on_texts(df['genre'])
-success_program_sequences = tokenizer_success_program.texts_to_sequences(df['genre'])
-success_program_padded = pad_sequences(success_program_sequences, maxlen=10)
+tokenizer_genre = Tokenizer()
+tokenizer_genre.fit_on_texts(df['genre'])
+genre_sequences = tokenizer_genre.texts_to_sequences(df['genre'])
+genre_padded = pad_sequences(genre_sequences, maxlen=10)
 
-tokenizer_success_state = Tokenizer()
-tokenizer_success_state.fit_on_texts(df['companySuccessState'])
-success_state_sequences = tokenizer_success_state.texts_to_sequences(df['companySuccessState'])
-success_state_padded = pad_sequences(success_state_sequences, maxlen=10)
+tokenizer_country_origin = Tokenizer()
+tokenizer_country_origin.fit_on_texts(df['countryOrigin'])
+country_origin_sequences = tokenizer_country_origin.texts_to_sequences(df['countryOrigin'])
+country_origin_padded = pad_sequences(country_origin_sequences, maxlen=10)
 
-tokenizer_success_status = Tokenizer()
-tokenizer_success_status.fit_on_texts(df['companySuccessStatus'])
-success_status_sequences = tokenizer_success_status.texts_to_sequences(df['companySuccessStatus'])
-success_status_padded = pad_sequences(success_status_sequences, maxlen=10)
+tokenizer_main_actor = Tokenizer()
+tokenizer_main_actor.fit_on_texts(df['mainActor'])
+main_actor_sequences = tokenizer_main_actor.texts_to_sequences(df['mainActor'])
+main_actor_padded = pad_sequences(main_actor_sequences, maxlen=10)
 
-X = np.hstack((success_program_padded, success_state_padded, success_status_padded, df[['companySuccessInteractionScore']].values))
-outcomes = np.array(df['outcomes'])
+X = np.hstack((genre_padded, country_origin_padded, main_actor_padded, df[['cost']].values))
+recommendatedForYou = np.array(df['recommendatedForYou'])
 reward = np.array(df['reward'])
 
 # Save Tokenizers
 with open('tokenizer_title.pkl', 'wb') as f:
-    pickle.dump(tokenizer_success_program, f)
-with open('tokenizer_success_state.pkl', 'wb') as f:
-    pickle.dump(tokenizer_success_state, f)
-with open('tokenizer_success_status.pkl', 'wb') as f:
-    pickle.dump(tokenizer_success_status, f)
+    pickle.dump(tokenizer_genre, f)
+with open('tokenizer_country_origin.pkl', 'wb') as f:
+    pickle.dump(tokenizer_country_origin, f)
+with open('tokenizer_main_actor.pkl', 'wb') as f:
+    pickle.dump(tokenizer_main_actor, f)
 
 # Compile and fit the model
 model.compile(optimizer='adam', loss=reward_adjusted_loss(reward), metrics=['accuracy'])
@@ -100,7 +100,7 @@ model.summary()
 # Train the model
 history = model.fit(
     X, 
-    outcomes,
+    recommendatedForYou,
     epochs=10,
     batch_size=2,
     validation_split=0.2

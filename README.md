@@ -11,7 +11,8 @@
 - Run generate_data.py
 - Run trainer.py
 - Run tester.py
-- Run converter.py
+- Run retrainer.py
+- Start using it via APIs
 
 # Test API
 - Run the command `fastapi dev main.py` in terminal

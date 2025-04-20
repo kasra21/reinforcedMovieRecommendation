@@ -17,13 +17,13 @@ import json
 
 
 class Recommendation():
-    def __init__(self, success_program: str, success_state: str, success_interaction_score: int, success_status: str, object_id: int):
-        self.success_program = success_program
-        self.success_state = success_state
-        self.success_interaction_score = success_interaction_score
-        self.success_status = success_state
+    def __init__(self, genre: str, country_origin: str, cost: int, main_actor: str, object_id: int):
+        self.genre = genre
+        self.country_origin = country_origin
+        self.cost = cost
+        self.main_actor = country_origin
         self.object_id = object_id
-        self.predicted_outcome = get_predicted_outcome(success_program, success_state, success_interaction_score, success_status, object_id)
+        self.predicted_recommendatedForYou = get_predicted_recommendatedForYou(genre, country_origin, cost, main_actor, object_id)
 
 class Reward():
     def __init__(self, object_id: int, like: int):
@@ -54,7 +54,7 @@ def check_and_add_id(data, new_entry=None, check_id=None):
 
 # Predicting with New Data
 def create_recommendation(rec_inputs):
-    recommendation = Recommendation(rec_inputs.success_program, rec_inputs.success_state, rec_inputs.success_interaction_score, rec_inputs.success_status, rec_inputs.object_id)
+    recommendation = Recommendation(rec_inputs.genre, rec_inputs.country_origin, rec_inputs.cost, rec_inputs.main_actor, rec_inputs.object_id)
     print(recommendation)
     return recommendation
 
@@ -91,47 +91,47 @@ def calculate_reward(object_id: int, like: int):
     return None
 
 
-def get_predicted_outcome(success_program: str, success_state: str, success_interaction_score: int, success_status: str, object_id: int):
+def get_predicted_recommendatedForYou(genre: str, country_origin: str, cost: int, main_actor: str, object_id: int):
     input_data = {
-        "genre": success_program,
-        "companySuccessState": success_state,
-        "companySuccessInteractionScore": success_interaction_score,
-        "companySuccessStatus": success_status,
+        "genre": genre,
+        "countryOrigin": country_origin,
+        "cost": cost,
+        "mainActor": main_actor,
         "reward": 0
     }
 
     # Define parameters for text processing
-    max_success_program_length = 10
-    max_success_state_length = 10
-    max_success_status_length = 10
+    max_genre_length = 10
+    max_country_origin_length = 10
+    max_main_actor_length = 10
     num_words = 1000  # Example vocabulary size
 
     # Tokenizer for text fields
-    success_program_tokenizer = Tokenizer(num_words=num_words)
-    success_state_tokenizer = Tokenizer(num_words=num_words)
-    success_status_tokenizer = Tokenizer(num_words=num_words)
+    genre_tokenizer = Tokenizer(num_words=num_words)
+    country_origin_tokenizer = Tokenizer(num_words=num_words)
+    main_actor_tokenizer = Tokenizer(num_words=num_words)
 
     # Fit tokenizers on your training data (for demonstration, we use only the input data)
-    success_program_tokenizer.fit_on_texts([input_data["genre"]])
-    success_state_tokenizer.fit_on_texts([input_data["companySuccessState"]])
-    success_status_tokenizer.fit_on_texts([input_data["companySuccessStatus"]])
+    genre_tokenizer.fit_on_texts([input_data["genre"]])
+    country_origin_tokenizer.fit_on_texts([input_data["countryOrigin"]])
+    main_actor_tokenizer.fit_on_texts([input_data["mainActor"]])
 
     # Convert text to sequences
-    success_program_seq = success_program_tokenizer.texts_to_sequences([input_data["genre"]])
-    success_state_seq = success_state_tokenizer.texts_to_sequences([input_data["companySuccessState"]])
-    success_status_seq = success_status_tokenizer.texts_to_sequences([input_data["companySuccessStatus"]])
+    genre_seq = genre_tokenizer.texts_to_sequences([input_data["genre"]])
+    country_origin_seq = country_origin_tokenizer.texts_to_sequences([input_data["countryOrigin"]])
+    main_actor_seq = main_actor_tokenizer.texts_to_sequences([input_data["mainActor"]])
 
     # Pad sequences
-    success_program_pad = pad_sequences(success_program_seq, maxlen=max_success_program_length, padding='post')
-    success_state_pad = pad_sequences(success_state_seq, maxlen=max_success_state_length, padding='post')
-    success_status_pad = pad_sequences(success_status_seq, maxlen=max_success_status_length, padding='post')
+    genre_pad = pad_sequences(genre_seq, maxlen=max_genre_length, padding='post')
+    country_origin_pad = pad_sequences(country_origin_seq, maxlen=max_country_origin_length, padding='post')
+    main_actor_pad = pad_sequences(main_actor_seq, maxlen=max_main_actor_length, padding='post')
 
     # Prepare the final input array
     model_input = np.concatenate([
-        success_program_pad.astype(np.float32),
-        success_state_pad.astype(np.float32),
-        success_status_pad.astype(np.float32),
-        np.array([[input_data["companySuccessInteractionScore"]]], dtype=np.float32)
+        genre_pad.astype(np.float32),
+        country_origin_pad.astype(np.float32),
+        main_actor_pad.astype(np.float32),
+        np.array([[input_data["cost"]]], dtype=np.float32)
     ], axis=1)
 
     # Load the model
@@ -151,7 +151,7 @@ def get_predicted_outcome(success_program: str, success_state: str, success_inte
     with open('synthetic_data.json') as f:
         data = json.load(f)
 
-    input_data['outcomes'] = int(str(predicted_class[0]))
+    input_data['recommendatedForYou'] = int(str(predicted_class[0]))
 
     existing_item = check_and_add_id(data, new_entry=input_data, check_id=object_id)
     print(existing_item)
@@ -160,7 +160,7 @@ def get_predicted_outcome(success_program: str, success_state: str, success_inte
         json.dump(data, f, indent=4)
 
     if existing_item is not None:
-        return str(existing_item['outcomes'])
+        return str(existing_item['recommendatedForYou'])
     else:
         return str(predicted_class[0])
 

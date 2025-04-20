@@ -11,10 +11,10 @@ def generate_data(num_samples):
         entry = {
             "id": i,
             "genre":  random.choice(['Drama', 'Action', 'Horror', 'Comedy']), #genre
-            "companySuccessState": random.choice(['Engaged', 'Assigned', 'Inactive']),        #int cost  #country of origin
-            "companySuccessInteractionScore": random.randint(0, 5),                           #popularity
-            "companySuccessStatus": random.choice(['Red', 'Amber', 'Green']),                 #main actor
-            "outcomes": random.randint(0, 9),  # Ensure category is within [0, 9]             #duration
+            "countryOrigin": random.choice(['US', 'UK', 'France']),        #int cost  #country of origin
+            "cost": random.randint(1000, 9999999),                           #popularity duration
+            "mainActor": random.choice(['Johnny Depp', 'Morgan Freeman', 'Tom Hanks']),                 #main actor
+            "recommendatedForYou": random.randint(0, 9),  # Ensure category is within [0, 9], likeliness of liking the move    
             "reward": 0
         }
         data.append(entry)

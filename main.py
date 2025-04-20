@@ -9,10 +9,10 @@ import tester
 app = FastAPI()
 
 class RecommendationInputs(BaseModel):
-    success_program: str
-    success_state: str
-    success_interaction_score: int
-    success_status: str
+    genre: str
+    country_origin: str
+    cost: int
+    main_actor: str
     object_id: Optional[int] = None
 
 class ReinforceInputs(BaseModel):

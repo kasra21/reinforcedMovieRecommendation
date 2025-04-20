@@ -1,3 +1,5 @@
+![Alt text](diagram.png?raw=true "Optional Title")
+
 # Install
 - Note: you need to install python3.11 (use brew to install it)
   - in your shell rc, you can create an alias so pip points to your specific pip implementation 

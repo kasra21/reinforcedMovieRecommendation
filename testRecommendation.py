@@ -16,8 +16,8 @@ import pickle
 
 # Example input data
 input_data = {
-    "companySuccessProgram": "Guided",
-    "companySuccessState": "Assigned",
+    "genre": "Drama",
+    "companySuccessState": "Engaged",
     "companySuccessInteractionScore": 2,
     "companySuccessStatus": "Red"
 }
@@ -34,12 +34,12 @@ success_state_tokenizer = Tokenizer(num_words=num_words)
 success_status_tokenizer = Tokenizer(num_words=num_words)
 
 # Fit tokenizers on your training data (for demonstration, we use only the input data)
-success_program_tokenizer.fit_on_texts([input_data["companySuccessProgram"]])
+success_program_tokenizer.fit_on_texts([input_data["genre"]])
 success_state_tokenizer.fit_on_texts([input_data["companySuccessState"]])
 success_status_tokenizer.fit_on_texts([input_data["companySuccessStatus"]])
 
 # Convert text to sequences
-success_program_seq = success_program_tokenizer.texts_to_sequences([input_data["companySuccessProgram"]])
+success_program_seq = success_program_tokenizer.texts_to_sequences([input_data["genre"]])
 success_state_seq = success_state_tokenizer.texts_to_sequences([input_data["companySuccessState"]])
 success_status_seq = success_status_tokenizer.texts_to_sequences([input_data["companySuccessStatus"]])
 

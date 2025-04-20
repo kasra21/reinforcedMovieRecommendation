@@ -27,7 +27,7 @@ model = load_model('model.h5')
 with open('synthetic_data.json') as f:
         data = json.load(f)
 # data = {
-#     "companySuccessProgram": ['Core', 'Guided', 'Advanced', 'Total', 'Guided'],
+#     "genre": ['Drama', 'Action', 'Horror', 'Comedy'],
 #     "companySuccessState": ['Engaged', 'Assigned', 'Inactive', 'Engaged', 'Assigned'],
 #     "companySuccessInteractionScore": [5, 2, 3, 4, 1],
 #     "companySuccessStatus": ['Red', 'Amber', 'Green', 'Amber', 'Green'],
@@ -39,8 +39,8 @@ df = pd.DataFrame(data)
 
 # Prepare text data
 tokenizer = Tokenizer()
-tokenizer.fit_on_texts(df['companySuccessProgram'].tolist() + df['companySuccessState'].tolist() + df['companySuccessStatus'].tolist())
-success_program_sequences = tokenizer.texts_to_sequences(df['companySuccessProgram'])
+tokenizer.fit_on_texts(df['genre'].tolist() + df['companySuccessState'].tolist() + df['companySuccessStatus'].tolist())
+success_program_sequences = tokenizer.texts_to_sequences(df['genre'])
 success_state_sequences = tokenizer.texts_to_sequences(df['companySuccessState'])
 success_status_sequences = tokenizer.texts_to_sequences(df['companySuccessStatus'])
 
@@ -66,8 +66,8 @@ success_status_padded = pad_sequences(success_status_sequences, maxlen=max_len_s
     
 # Tokenize and pad text data
 tokenizer_success_program = Tokenizer()
-tokenizer_success_program.fit_on_texts(df['companySuccessProgram'])
-success_program_sequences = tokenizer_success_program.texts_to_sequences(df['companySuccessProgram'])
+tokenizer_success_program.fit_on_texts(df['genre'])
+success_program_sequences = tokenizer_success_program.texts_to_sequences(df['genre'])
 success_program_padded = pad_sequences(success_program_sequences, maxlen=10)
 
 tokenizer_success_state = Tokenizer()

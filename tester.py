@@ -93,7 +93,7 @@ def calculate_reward(object_id: int, like: int):
 
 def get_predicted_outcome(success_program: str, success_state: str, success_interaction_score: int, success_status: str, object_id: int):
     input_data = {
-        "companySuccessProgram": success_program,
+        "genre": success_program,
         "companySuccessState": success_state,
         "companySuccessInteractionScore": success_interaction_score,
         "companySuccessStatus": success_status,
@@ -112,12 +112,12 @@ def get_predicted_outcome(success_program: str, success_state: str, success_inte
     success_status_tokenizer = Tokenizer(num_words=num_words)
 
     # Fit tokenizers on your training data (for demonstration, we use only the input data)
-    success_program_tokenizer.fit_on_texts([input_data["companySuccessProgram"]])
+    success_program_tokenizer.fit_on_texts([input_data["genre"]])
     success_state_tokenizer.fit_on_texts([input_data["companySuccessState"]])
     success_status_tokenizer.fit_on_texts([input_data["companySuccessStatus"]])
 
     # Convert text to sequences
-    success_program_seq = success_program_tokenizer.texts_to_sequences([input_data["companySuccessProgram"]])
+    success_program_seq = success_program_tokenizer.texts_to_sequences([input_data["genre"]])
     success_state_seq = success_state_tokenizer.texts_to_sequences([input_data["companySuccessState"]])
     success_status_seq = success_status_tokenizer.texts_to_sequences([input_data["companySuccessStatus"]])
 

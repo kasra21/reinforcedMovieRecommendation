@@ -27,8 +27,8 @@ def preprocess_data(df):
 
     # Tokenize and pad text data
     tokenizer_success_program = Tokenizer()
-    tokenizer_success_program.fit_on_texts(df['companySuccessProgram'])
-    success_program_sequences = tokenizer_success_program.texts_to_sequences(df['companySuccessProgram'])
+    tokenizer_success_program.fit_on_texts(df['genre'])
+    success_program_sequences = tokenizer_success_program.texts_to_sequences(df['genre'])
     success_program_padded = pad_sequences(success_program_sequences, maxlen=10)
 
     tokenizer_success_state = Tokenizer()
